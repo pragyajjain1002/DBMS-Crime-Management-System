@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS Citizen,
  CREATE TABLE Station (
    StationID   INT             PRIMARY KEY,
    Name        VARCHAR(255)    NOT NULL,
-   Phone       INT             NOT NULL,
+   Phone       VARCHAR(255)    NOT NULL,
    Email       VARCHAR(255)    NOT NULL,
    Address     VARCHAR(255)    NOT NULL
    -- Zone        INT             NOT NULL,
@@ -43,8 +43,8 @@ CREATE TABLE User (
     AadhaarID   INT             NOT NULL,
     PerID       INT             NOT NULL,
     -- Name        VARCHAR(255)    NOT NULL,
-    -- Email       VARCHAR(255)    NOT NULL,
-    -- FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
+    Email       VARCHAR(255)    NOT NULL,
+    FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
     FOREIGN KEY (PerID) REFERENCES Permission(PerID)
 );
 
@@ -67,18 +67,17 @@ CREATE TABLE User (
 
 CREATE TABLE Officer (
     OfficerID   INT             PRIMARY KEY,
-    AadhaarID   INT             NOT NULL
-    -- StationID   INT             NOT NULL,
-    -- FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
-    -- FOREIGN KEY (StationID) REFERENCES Station(StationID)
+    AadhaarID   INT             NOT NULL,
+    StationID   INT             NOT NULL,
+    FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
+    FOREIGN KEY (StationID) REFERENCES Station(StationID)
 );
 
 CREATE TABLE Fir (
     FirID       INT             PRIMARY KEY,
+    Status      ENUM('Pending','In Court','Completed'),
     LodgeDate   DATE            NOT NULL,
     Descr       VARCHAR(255)    NOT NULL,
-    -- Type        VARCHAR(255)    NOT NULL,
-    Status      ENUM('Pending','In Court','Completed'),
     Lodger      VARCHAR(255)    NOT NULL,
     Manager     INT,
     StationID   INT,
@@ -88,30 +87,27 @@ CREATE TABLE Fir (
 );
 
 CREATE TABLE Court (
-    CourtID     VARCHAR(3)      NOT NULL,
+    CourtID     VARCHAR(3)      PRIMARY KEY,
     Name        VARCHAR(255)    NOT NULL,
-    Place       VARCHAR(255)    NOT NULL,
-    PRIMARY KEY (CourtID)
+    Place       VARCHAR(255)    NOT NULL
 );
 
 CREATE TABLE Cases (
     CaseID      INT             PRIMARY KEY,
     Type        ENUM('Criminal','Civil'),
     Status      ENUM('Pending','Not Guilty','Found Guilty'),
-    Result      VARCHAR(255)    NOT NULL,
     FirID       INT             NOT NULL,
     CourtID     VARCHAR(3)      NOT NULL,
-    PRIMARY KEY (CaseID),
     FOREIGN KEY (FirID) REFERENCES Fir(FirID),
     FOREIGN KEY (CourtID) REFERENCES Court(CourtID)
 );
 
 CREATE TABLE Suspect (
-    SuspectID   INT             NOT NULL,
+    SuspectID   INT             PRIMARY KEY,
     AadhaarID   INT             NOT NULL,
-    CaseID      INT
-    PRIMARY KEY (SuspectID),
-    FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID)
+    CaseID      INT             NOT NULL,
+    FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
+    FOREIGN KEY (CaseID) REFERENCES Cases(CaseID)
 );
 
 -- CREATE TABLE CaseSuspects (
@@ -124,9 +120,17 @@ CREATE TABLE Suspect (
 -- );
 
 DELIMITER |
-CREATE TRIGGER ChangePerID BEFORE INSERT ON Officer
+CREATE TRIGGER UpPerID BEFORE INSERT ON Officer
 FOR EACH ROW
 BEGIN
-  UPDATE User SET PerID = 2 WHERE User.AadhaarID = NEW.AadhaarID;
+  UPDATE User SET PerID = 100 WHERE User.AadhaarID = NEW.AadhaarID;
+END |
+DELIMITER ;
+
+DELIMITER |
+CREATE TRIGGER DownPerID AFTER DELETE ON Officer
+FOR EACH ROW
+BEGIN
+  UPDATE User SET PerID = 0 WHERE User.AadhaarID = OLD.AadhaarID;
 END |
 DELIMITER ;
