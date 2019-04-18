@@ -38,12 +38,12 @@ DROP TABLE IF EXISTS User,
 
 CREATE TABLE User (
     Username    VARCHAR(255)    PRIMARY KEY,
+    Password    VARCHAR(255)    NOT NULL,
     AadhaarID   INT             NOT NULL,
     PerID       INT             NOT NULL,
-    Password    VARCHAR(255)    NOT NULL,
-    Name        VARCHAR(255)    NOT NULL,
-    Email       VARCHAR(255)    NOT NULL,
-    FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
+    -- Name        VARCHAR(255)    NOT NULL,
+    -- Email       VARCHAR(255)    NOT NULL,
+    -- FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
     FOREIGN KEY (PerID) REFERENCES Permission(PerID)
 );
 
@@ -66,10 +66,10 @@ CREATE TABLE User (
 
 CREATE TABLE Officer (
     OfficerID   INT             PRIMARY KEY,
-    AadhaarID   INT             NOT NULL,
-    StationID   INT             NOT NULL,
-    FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
-    FOREIGN KEY (StationID) REFERENCES Station(StationID)
+    AadhaarID   INT             NOT NULL
+    -- StationID   INT             NOT NULL,
+    -- FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
+    -- FOREIGN KEY (StationID) REFERENCES Station(StationID)
 );
 
 CREATE TABLE Fir (
@@ -123,3 +123,23 @@ CREATE TABLE CaseSuspects (
     FOREIGN KEY (SuspectID) REFERENCES Suspect(SuspectID),
     FOREIGN KEY (CaseID) REFERENCES Cases(CaseID)
 );
+
+INSERT INTO Permission
+VALUES
+(1, 'Normal'),
+(2, 'Officer'),
+(3, 'Admin');
+
+INSERT INTO User
+VALUES ('siddhk', 'password', 222, 1);
+
+DELIMITER |
+CREATE TRIGGER ChangePerID BEFORE INSERT ON Officer
+FOR EACH ROW
+BEGIN
+  UPDATE User SET PerID = 2 WHERE User.AadhaarID = NEW.AadhaarID;
+END |
+DELIMITER ;
+
+INSERT INTO Officer
+VALUES (2, 222);
