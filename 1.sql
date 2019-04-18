@@ -13,80 +13,80 @@ DROP TABLE IF EXISTS User,
                      Cases,
                      Court;
 
+ CREATE TABLE Citizen (
+     AadhaarID   INT             NOT NULL,
+     Name        VARCHAR(255)    NOT NULL,
+     BirthDate   DATE            NOT NULL,
+     Gender      ENUM('M','F')   NOT NULL,
+     Address     VARCHAR(255)    NOT NULL,
+     -- Zone        INT             NOT NULL,
+     PRIMARY KEY (AadhaarID)
+ );
+
+ CREATE TABLE Station (
+   StationID   INT             NOT NULL,
+   Name        VARCHAR(255)    NOT NULL,
+   Phone       INT             NOT NULL,
+   Email       VARCHAR(255)    NOT NULL,
+   Address     VARCHAR(255)    NOT NULL,
+   -- Zone        INT             NOT NULL,
+   PRIMARY KEY (StationID)
+ );
+
+ CREATE TABLE Permission (
+     PerID       INT             NOT NULL,
+     PerName     VARCHAR(255)    NOT NULL,
+     PRIMARY KEY (PerID)
+ );
+
 CREATE TABLE User (
-    UserID      INT             NOT NULL,
-    Name        VARCHAR(255)    NOT NULL,
-    Mobile      INT(10)         NOT NULL,
-    Email       VARCHAR(255)    NOT NULL,
-    PRIMARY KEY (UserID)
-);
-
-CREATE TABLE Login (
-    LoginID     INT             NOT NULL,
-    Username    VARCHAR(255)    NOT NULL,
+    Username    VARCHAR(255)    PRIMARY KEY,
+    AadhaarID   INT             NOT NULL,
+    PerID       INT             NOT NULL,
     Password    VARCHAR(255)    NOT NULL,
-    PRIMARY KEY (LoginID)
-);
-
-CREATE TABLE Permission (
-    PerID       INT             NOT NULL,
-    PerName     VARCHAR(255)    NOT NULL,
-    Module      VARCHAR(255)    NOT NULL,
-    PRIMARY KEY (PerID)
-);
-
-CREATE TABLE Has (
-    UserID      INT             NOT NULL,
-    LoginID     INT             NOT NULL,
-    PerID       INT             NOT NULL,
-    PRIMARY KEY (UserID, LoginID, PerID),
-    FOREIGN KEY (UserID) REFERENCES User(UserID),
-    FOREIGN KEY (LoginID) REFERENCES Login(LoginID),
+    Name        VARCHAR(255)    NOT NULL,
+    Email       VARCHAR(255)    NOT NULL,
+    FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
     FOREIGN KEY (PerID) REFERENCES Permission(PerID)
 );
 
-CREATE TABLE Citizen (
-    CitizenID   INT             NOT NULL,
-    Name        VARCHAR(255)    NOT NULL,
-    BirthDate   DATE            NOT NULL,
-    Gender      ENUM('M','F')   NOT NULL,
-    Address     VARCHAR(255)    NOT NULL,
-    Zone        INT             NOT NULL,
-    PRIMARY KEY (CitizenID)
-);
+-- CREATE TABLE Login (
+--     LoginID     INT             NOT NULL,
+--     Username    VARCHAR(255)    NOT NULL,
+--     Password    VARCHAR(255)    NOT NULL,
+--     PRIMARY KEY (LoginID)
+-- );
 
-CREATE TABLE Station (
-    StationID   VARCHAR(3)      NOT NULL,
-    Name        VARCHAR(255)    NOT NULL,
-    Phone       INT             NOT NULL,
-    Email       VARCHAR(255)    NOT NULL,
-    Address     VARCHAR(255)    NOT NULL,
-    Zone        INT             NOT NULL,
-    PRIMARY KEY (StationID)
-);
+-- CREATE TABLE Has (
+--     AadhaarID      INT             NOT NULL,
+--     LoginID     INT             NOT NULL,
+--     PerID       INT             NOT NULL,
+--     PRIMARY KEY (UserID, LoginID, PerID),
+--     FOREIGN KEY (UserID) REFERENCES User(UserID),
+--     FOREIGN KEY (LoginID) REFERENCES Login(LoginID),
+--     FOREIGN KEY (PerID) REFERENCES Permission(PerID)
+-- );
 
 CREATE TABLE Officer (
-    OfficerID   INT             NOT NULL,
-    UserID      INT             NOT NULL,
-    CitizenID   INT             NOT NULL,
-    StationID   VARCHAR(3)      NOT NULL,
+    OfficerID   INT             PRIMARY KEY,
+    AadhaarID   INT             NOT NULL,
+    StationID   INT             NOT NULL,
     PRIMARY KEY (OfficerID),
-    FOREIGN KEY (UserID) REFERENCES User(UserID),
-    FOREIGN KEY (CitizenID) REFERENCES Citizen(CitizenID),
+    FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
     FOREIGN KEY (StationID) REFERENCES Station(StationID)
 );
 
 CREATE TABLE Fir (
-    FirID       INT             NOT NULL,
+    FirID       INT             PRIMARY KEY AUTOINCREMENT,
     LodgeDate   DATE            NOT NULL,
     Descr       VARCHAR(255)    NOT NULL,
-    Type        VARCHAR(255)    NOT NULL,
-    Status      ENUM('P','FR','CS')     NOT NULL,
-    Lodger      INT             NOT NULL,
-    Manager     INT             NOT NULL,
-    StationID   VARCHAR(3)      NOT NULL,
+    -- Type        VARCHAR(255)    NOT NULL,
+    Status      ENUM('P','S','C'),
+    Lodger      VARCHAR(255)    NOT NULL,
+    Manager     INT,
+    StationID   INT,
     PRIMARY KEY (FirID),
-    FOREIGN KEY (Lodger) REFERENCES User(UserID),
+    FOREIGN KEY (Lodger) REFERENCES User(Username),
     FOREIGN KEY (Manager) REFERENCES Officer(OfficerID),
     FOREIGN KEY (StationID) REFERENCES Station(StationID)
 );
@@ -100,8 +100,8 @@ CREATE TABLE Court (
 
 CREATE TABLE Cases (
     CaseID      INT             NOT NULL,
-    Type        VARCHAR(255)    NOT NULL,
-    Status      ENUM('P','C')   NOT NULL,
+    Type        ENUM('Criminal','Civil'),
+    Status      ENUM('P','C'),
     Result      VARCHAR(255)    NOT NULL,
     FirID       INT             NOT NULL,
     CourtID     VARCHAR(3)      NOT NULL,
@@ -112,12 +112,12 @@ CREATE TABLE Cases (
 
 CREATE TABLE Suspect (
     SuspectID   INT             NOT NULL,
-    CitizenID   INT             NOT NULL,
+    AadhaarID   INT             NOT NULL,
     Name        VARCHAR(255)    NOT NULL,
     BirthDate   DATE            NOT NULL,
     Gender      ENUM('M','F')   NOT NULL,
     PRIMARY KEY (SuspectID),
-    FOREIGN KEY (CitizenID) REFERENCES Citizen(CitizenID)
+    FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID)
 );
 
 CREATE TABLE CaseSuspects (
