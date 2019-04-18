@@ -2,16 +2,17 @@ DROP DATABASE IF EXISTS FIR_Mgmt;
 CREATE DATABASE FIR_Mgmt;
 USE FIR_Mgmt;
 
-DROP TABLE IF EXISTS User,
-                     Login,
-                     Permission,
-                     Fir,
+DROP TABLE IF EXISTS Citizen,
                      Station,
+                     Permission,
+                     User,
+                     -- Login,
                      Officer,
-                     Citizen,
-                     Suspect,
+                     Fir,
+                     Court,
                      Cases,
-                     Court;
+                     Suspect,
+                     CaseSuspects;
 
  CREATE TABLE Citizen (
      AadhaarID   INT             PRIMARY KEY,
@@ -94,7 +95,7 @@ CREATE TABLE Court (
 );
 
 CREATE TABLE Cases (
-    CaseID      INT             NOT NULL,
+    CaseID      INT             PRIMARY KEY,
     Type        ENUM('Criminal','Civil'),
     Status      ENUM('P','C'),
     Result      VARCHAR(255)    NOT NULL,
@@ -108,30 +109,19 @@ CREATE TABLE Cases (
 CREATE TABLE Suspect (
     SuspectID   INT             NOT NULL,
     AadhaarID   INT             NOT NULL,
-    Name        VARCHAR(255)    NOT NULL,
-    BirthDate   DATE            NOT NULL,
-    Gender      ENUM('M','F')   NOT NULL,
+    CaseID      INT
     PRIMARY KEY (SuspectID),
     FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID)
 );
 
-CREATE TABLE CaseSuspects (
-    SuspectID   INT             NOT NULL,
-    CaseID      INT             NOT NULL,
-    Guilty      ENUM('Y','N')   NOT NULL,
-    PRIMARY KEY (SuspectID, CaseID),
-    FOREIGN KEY (SuspectID) REFERENCES Suspect(SuspectID),
-    FOREIGN KEY (CaseID) REFERENCES Cases(CaseID)
-);
-
-INSERT INTO Permission
-VALUES
-(1, 'Normal'),
-(2, 'Officer'),
-(3, 'Admin');
-
-INSERT INTO User
-VALUES ('siddhk', 'password', 222, 1);
+-- CREATE TABLE CaseSuspects (
+--     SuspectID   INT             NOT NULL,
+--     CaseID      INT             NOT NULL,
+--     Guilty      ENUM('Y','N')   NOT NULL,
+--     PRIMARY KEY (SuspectID, CaseID),
+--     FOREIGN KEY (SuspectID) REFERENCES Suspect(SuspectID),
+--     FOREIGN KEY (CaseID) REFERENCES Cases(CaseID)
+-- );
 
 DELIMITER |
 CREATE TRIGGER ChangePerID BEFORE INSERT ON Officer
@@ -140,6 +130,3 @@ BEGIN
   UPDATE User SET PerID = 2 WHERE User.AadhaarID = NEW.AadhaarID;
 END |
 DELIMITER ;
-
-INSERT INTO Officer
-VALUES (2, 222);
