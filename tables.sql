@@ -1,40 +1,38 @@
-DROP DATABASE IF EXISTS FIR_Mgmt;
-CREATE DATABASE FIR_Mgmt;
-USE FIR_Mgmt;
+DROP DATABASE IF EXISTS FIRM;
+CREATE DATABASE FIRM;
+USE FIRM;
 
 DROP TABLE IF EXISTS Citizen,
                      Station,
                      Permission,
                      User,
-                     -- Login,
                      Officer,
                      Fir,
                      Court,
                      Cases,
-                     Suspect,
-                     CaseSuspects;
+                     Suspect;
 
  CREATE TABLE Citizen (
-     AadhaarID   INT             PRIMARY KEY,
-     Name        VARCHAR(255)    NOT NULL,
-     BirthDate   DATE            NOT NULL,
-     Gender      ENUM('M','F')   NOT NULL,
-     Address     VARCHAR(255)    NOT NULL
+     AadhaarID   INT            PRIMARY KEY,
+     Name        VARCHAR(255)   NOT NULL,
+     BirthDate   DATE           NOT NULL,
+     Gender      ENUM('M','F')  NOT NULL,
+     Address     VARCHAR(255)   NOT NULL
      -- Zone        INT             NOT NULL,
  );
 
  CREATE TABLE Station (
-   StationID   INT             PRIMARY KEY,
-   Name        VARCHAR(255)    NOT NULL,
-   Phone       VARCHAR(255)    NOT NULL,
-   Email       VARCHAR(255)    NOT NULL,
-   Address     VARCHAR(255)    NOT NULL
+   StationID   INT              PRIMARY KEY,
+   Name        VARCHAR(255)     NOT NULL,
+   Phone       VARCHAR(255)     NOT NULL,
+   Email       VARCHAR(255)     NOT NULL,
+   Address     VARCHAR(255)     NOT NULL
    -- Zone        INT             NOT NULL,
  );
 
  CREATE TABLE Permission (
-     PerID       INT             PRIMARY KEY,
-     PerName     VARCHAR(255)    NOT NULL
+     PerID       INT            PRIMARY KEY,
+     PerName     VARCHAR(255)   NOT NULL
  );
 
 CREATE TABLE User (

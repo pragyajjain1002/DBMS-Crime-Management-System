@@ -1,4 +1,4 @@
-USE FIR_Mgmt;
+USE FIRM;
 
 INSERT INTO Citizen #aadhaar name birth gender addr
 VALUES
