@@ -78,7 +78,7 @@ CREATE TABLE Fir (
     LodgeDate   DATE            NOT NULL,
     Descr       VARCHAR(255)    NOT NULL,
     -- Type        VARCHAR(255)    NOT NULL,
-    Status      ENUM('P','S','C'),
+    Status      ENUM('Pending','In Court','Completed'),
     Lodger      VARCHAR(255)    NOT NULL,
     Manager     INT,
     StationID   INT,
@@ -97,7 +97,7 @@ CREATE TABLE Court (
 CREATE TABLE Cases (
     CaseID      INT             PRIMARY KEY,
     Type        ENUM('Criminal','Civil'),
-    Status      ENUM('P','C'),
+    Status      ENUM('Pending','Not Guilty','Found Guilty'),
     Result      VARCHAR(255)    NOT NULL,
     FirID       INT             NOT NULL,
     CourtID     VARCHAR(3)      NOT NULL,
