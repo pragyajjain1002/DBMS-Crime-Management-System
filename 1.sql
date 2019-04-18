@@ -14,29 +14,26 @@ DROP TABLE IF EXISTS User,
                      Court;
 
  CREATE TABLE Citizen (
-     AadhaarID   INT             NOT NULL,
+     AadhaarID   INT             PRIMARY KEY,
      Name        VARCHAR(255)    NOT NULL,
      BirthDate   DATE            NOT NULL,
      Gender      ENUM('M','F')   NOT NULL,
-     Address     VARCHAR(255)    NOT NULL,
+     Address     VARCHAR(255)    NOT NULL
      -- Zone        INT             NOT NULL,
-     PRIMARY KEY (AadhaarID)
  );
 
  CREATE TABLE Station (
-   StationID   INT             NOT NULL,
+   StationID   INT             PRIMARY KEY,
    Name        VARCHAR(255)    NOT NULL,
    Phone       INT             NOT NULL,
    Email       VARCHAR(255)    NOT NULL,
-   Address     VARCHAR(255)    NOT NULL,
+   Address     VARCHAR(255)    NOT NULL
    -- Zone        INT             NOT NULL,
-   PRIMARY KEY (StationID)
  );
 
  CREATE TABLE Permission (
-     PerID       INT             NOT NULL,
-     PerName     VARCHAR(255)    NOT NULL,
-     PRIMARY KEY (PerID)
+     PerID       INT             PRIMARY KEY,
+     PerName     VARCHAR(255)    NOT NULL
  );
 
 CREATE TABLE User (
@@ -58,7 +55,7 @@ CREATE TABLE User (
 -- );
 
 -- CREATE TABLE Has (
---     AadhaarID      INT             NOT NULL,
+--     UserID      INT             NOT NULL,
 --     LoginID     INT             NOT NULL,
 --     PerID       INT             NOT NULL,
 --     PRIMARY KEY (UserID, LoginID, PerID),
@@ -71,13 +68,12 @@ CREATE TABLE Officer (
     OfficerID   INT             PRIMARY KEY,
     AadhaarID   INT             NOT NULL,
     StationID   INT             NOT NULL,
-    PRIMARY KEY (OfficerID),
     FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
     FOREIGN KEY (StationID) REFERENCES Station(StationID)
 );
 
 CREATE TABLE Fir (
-    FirID       INT             PRIMARY KEY AUTOINCREMENT,
+    FirID       INT             PRIMARY KEY,
     LodgeDate   DATE            NOT NULL,
     Descr       VARCHAR(255)    NOT NULL,
     -- Type        VARCHAR(255)    NOT NULL,
@@ -85,7 +81,6 @@ CREATE TABLE Fir (
     Lodger      VARCHAR(255)    NOT NULL,
     Manager     INT,
     StationID   INT,
-    PRIMARY KEY (FirID),
     FOREIGN KEY (Lodger) REFERENCES User(Username),
     FOREIGN KEY (Manager) REFERENCES Officer(OfficerID),
     FOREIGN KEY (StationID) REFERENCES Station(StationID)
