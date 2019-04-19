@@ -22,11 +22,12 @@ DROP TABLE IF EXISTS Citizen,
  );
 
  CREATE TABLE Station (
-   StationID   INT              PRIMARY KEY,
+   StationID   INT              DEFAULT 0,
    Name        VARCHAR(255)     NOT NULL,
    Phone       VARCHAR(255)     NOT NULL,
    Email       VARCHAR(255)     NOT NULL,
-   Address     VARCHAR(255)     NOT NULL
+   Address     VARCHAR(255)     NOT NULL,
+   PRIMARY KEY(StationID)
    -- Zone        INT             NOT NULL,
  );
 
@@ -73,8 +74,8 @@ CREATE TABLE Officer (
 
 CREATE TABLE Fir (
     FirID       INT             PRIMARY KEY,
-    Status      ENUM('Pending','In Court','Completed'),
-    LodgeDate   DATE            NOT NULL,
+    Status      ENUM('Withdrawn','Pending','In Court','Completed') DEFAULT 'Pending',
+    LodgeDate   DATE  NOT NULL,
     Descr       VARCHAR(255)    NOT NULL,
     Lodger      VARCHAR(255)    NOT NULL,
     Manager     INT,
