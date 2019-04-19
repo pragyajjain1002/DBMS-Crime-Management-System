@@ -75,7 +75,7 @@ CREATE TABLE Officer (
 CREATE TABLE Fir (
     FirID       INT             PRIMARY KEY,
     Status      ENUM('Withdrawn','Under Investigation', 'In Court', 'Completed','Registered', 'Closed') DEFAULT 'Registered',
-    LodgeDate   DATE  DEFAULT strftime('%Y-%m-%d','now'),
+    LodgeDate   DATETIME  DEFAULT CURRENT_TIMESTAMP,
     Descr       VARCHAR(255)    NOT NULL,
     Lodger      VARCHAR(255)    NOT NULL,
     Manager     INT,
