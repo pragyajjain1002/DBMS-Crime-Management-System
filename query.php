@@ -34,14 +34,14 @@
     background-repeat: no-repeat;*/
     background-color: red;
     margin-left: -2%;
-    width: 10%;
+    width: 50%;
     height: 7%;
     margin-top: 2%;
   }
 
   #file{
     background-color: red;
-    width: 10%;
+    width: 50%;
     height: 7%;
     margin-top: 2%;
   }
@@ -52,7 +52,7 @@
     border-color: black;
     padding: 2%;
     margin-left: 25%;
-    margin-top: -18%;
+    margin-top: -10%;
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0, 0.4);
     display: none;
@@ -60,6 +60,17 @@
 
   #id03{
     display: none;
+    border-style: solid;
+    border-color: blue;
+    width: 50%;
+    border-radius: 10%;
+    padding: 1%;
+    margin-left: 20%;
+    margin-top: -10%;
+  }
+
+  td,th{
+    padding: 9px;
   }
 
   </style>
@@ -72,105 +83,153 @@
     FIR Portal
   </h2>
 
-  <div style="margin-left: 2%;">
+  <table style="margin-left: 2%;">
 
-    <div style="margin-top: -3%;">
-      <img src="./images/user.png" alt="Login Avatar" height="15%" width="7%"> <br/>
+    <tr> <td>
+      <img src="./images/user.png" alt="Login Avatar" height="30%" width="30%"> <br/>
       Welcome <?php echo $_SESSION['username'] ?>
-    </div>
+    </td> <tr>
 
-    <button id="file" onclick="document.getElementById('id02').style.display='block'">File Online FIR</button>
-  </br> <br/>
+    <tr> <td>
+      <button id="file" onclick="document.getElementById('id02').style.display='block'">File Online FIR</button>
+    </td> </tr>
 
-    <button id="history" onclick="document.getElementById('id03').style.display='block'">View FIR filing history</button>
-  </br> <br/>
+    <tr> <td>
+      <button id="history" onclick="document.getElementById('id03').style.display='block'">View FIR filing history</button>
+    </td> </tr>
 
-  </div>
-
-    <!--  Add the feature of withdraing a FIR -->
-    <div id="fileFIR">
-      <form id="id02" action="./query.php">
-
-        <label for="uname"><b>UserName</b></label> <br/>
-        <input type="text" placeholder="<?php echo $_SESSION['username']; ?>" name="cid" readonly> <br/> <br/>
-
-        <label for="date"><b>Lodged Date</b></label> <br/>
-        <input type="text" placeholder="<?php echo date('d-m-Y: h-i-sa'); ?>" name="cid" readonly> <br/> <br/>
-
-        <label for="ocr"><b>Details of occurrence</b></label> <br/>
-        <input type="text" style="height: 40%;" placeholder="Enter place, nature of crime and other relevant details" name="ocr" required> <br/> <br/>
-
-        <label for="descr"><b>Description of accussed</b></label> <br/>
-        <input type="text" style="height: 20%;" placeholder="Enter details of the accussed" name="descr" required> <br/> <br/>
-
-        <label for="desc"><b>Station ID</b></label>
-        <select name="stationId">
-          <?php
-            // $sql = "select StationId from Station;";
-            // $result = $conn->query($sql);
-            // $count = 0;
-            // while($row = $result->fetch_assoc()) {
-            //   echo "<option value='v" . $count . "'>" . $row['StationId'] . "</option>";
-            //   $count = $count + 1;
-            // }
-           ?>
-        </select> <br/>
-
-        <button type="submit">File FIR</button>
-      </form>
-    </div>
-
-  <div id="viewFIR">
-    <table id="id03">
-      <tr>
-        <th>FIR_ID</th>
-        <th>Lodged Date</th>
-        <th>Description</th>
-        <th>StationID</th>
-        <th>Status</th>
-      </tr>
-      <?php
-      // $sql = "select * from FIR where Username = " . $_SESSION['username'] . ";";
-      // $result = $conn->query($sql);
-      // if ($result->num_rows > 0) {
-      //   while( $row = $result->fetch_assoc() ){
-      //     echo "<tr>";
-      //     echo "<td>".$row['FireID']."</td>";
-      //     echo "<td>".$row['LodgeDate']."</td>";
-      //     echo "<td>".$row['Descr']."</td>";
-      //     echo "<td>".$row['StationId']."</td>";
-      //     echo "<td>".$row['Status']."</td>";
-      //     echo "</tr>";
-      //   }
-        ?>
-    </table>
-  </div>
-
+  </table>
+  <!--  Add the feature of withdrawing a FIR -->
   <?php
-    // if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //   $username = $_SESSION['username'];
-    //   $descr = $_REQUEST['ocr'] . $_REQUEST['descr'];
-    //   $stationid = $_REQUEST['stationid']
-    //   $sql = "select AadhaarID from User where Username ='" . $username . "';";
-    //   $result = $conn->query($sql);
-    //   if ($result->num_rows > 0) {
-    //     while( $row = $result->fetch_assoc() ){
-    //       $userid = $row['AadhaarID'];
-    //     }
-    //   }
-    //   $sql = "select count(*) as total from FIR;";
-    //   $result = $conn->query($sql);
-    //   if ($result->num_rows > 0){
-    //     while( $row = $result->fetch_assoc() ){
-    //       $firid = 1 + $row['total'];
-    //     }
-    //   }
-    //   $sql = "insert into FIR (FirId, Lodger, Descr, StationID) values (" . $firid . "," . $username . "," $descr . "," . $stationid . ");";
-    //   if (!mysqli_query($con,$sql)){
-    //     echo("Error description: " . mysqli_error($con));
-    //   }
-    // }
-  ?>
+    $sql = "select StationID from Station;";
+    $servername = "localhost";
+    $username = "root";
+    $password = "asd";
+    $db = "FIRM";
 
-  </body>
-  </html>
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $db);
+    // Check connection
+    if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+    }
+   ?>
+
+   <div id="fileFIR">
+     <form id="id02" action="./query.php" method="post">
+
+       <label for="uname"><b>UserName</b></label> <br/>
+       <input type="text" placeholder="<?php echo $_SESSION['username']; ?>" name="cid" readonly> <br/> <br/>
+
+       <label for="date"><b>Lodged Date</b></label> <br/>
+       <input type="text" placeholder="<?php echo date('d-m-Y: h-i-sa'); ?>" name="cid" readonly> <br/> <br/>
+
+       <label for="ocr"><b>Details of occurrence</b></label> <br/>
+       <input type="text" style="height: 40%;" placeholder="Enter place, nature of crime and other relevant details" name="ocr" required> <br/> <br/>
+
+       <label for="descr"><b>Description of accussed</b></label> <br/>
+       <input type="text" style="height: 20%;" placeholder="Enter details of the accussed" name="descr" required> <br/> <br/>
+
+       <label for="desc"><b>Station ID</b></label>
+       <select name="StationID">
+         <?php
+           $withdraw = 0;
+           $sql = "select StationID from Station;";
+           $result = $conn->query($sql);
+           if($result->num_rows == 0){
+             echo "There is no Station Registered!";
+           }
+           else{
+             while($row = $result->fetch_assoc()) {
+               echo "<option value=" . $row['StationID'] . ">" . $row['StationID'] . "</option>";
+             }
+           }
+          ?>
+       </select> <br/>
+
+       <button type="submit">File FIR</button>
+     </form>
+   </div>
+
+   <div id="viewFIR">
+     <table id="id03">
+       <tr>
+         <th>FIR_ID</th>
+         <th>Lodged Date</th>
+         <th>Description</th>
+         <th>StationID</th>
+         <th>Status</th>
+         <th>Action</th>
+       </tr>
+       <?php
+       $sql = "select * from Fir where Lodger = '" . $_SESSION['username'] . "';";
+       $result = $conn->query($sql);
+       if ($result->num_rows > 0) {
+         while( $row = $result->fetch_assoc() ){
+           echo "<tr>";
+           echo "<td>" . $row['FirID'] . "</td>";
+           echo "<td>" . $row['LodgeDate'] . "</td>";
+           echo "<td>" . $row['Descr'] . "</td>";
+           echo "<td>" . $row['StationID'] . "</td>";
+           echo "<td>" . $row['Status'] . "</td>";
+           $action = "NA";
+           $withdraw = 0;
+           if ($row['Status'] == 'Registered' or $row['Status'] == 'Under Investigation'){
+             $action = "<form action='./query.php' method='post'> <button type='submit'> Withdraw </button> </form> ";
+             $firid = $row['FirID'];
+             $withdraw = 1;
+           }
+           echo "<td>" . $action . "</td>";
+           echo "</tr>";
+         }
+        }
+        else{
+          echo "You have not filed any FIR yet!";
+        }
+         ?>
+     </table>
+   </div>
+
+   <?php
+     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+       if($withdraw==1){
+        //  Withdraw the FIR,
+        $sql = 'update Fir set Status = "Withdrawn"';
+        if (!mysqli_query($conn,$sql)){
+          echo("Error description: " . mysqli_error($conn));
+        }
+        else{
+          echo "Your Fir is withdrawn successfully!";
+        }
+       }
+       else{
+         echo "Inside else";
+         $username = $_SESSION['username'];
+         $descr = $_REQUEST['ocr'] . ":" . $_REQUEST['descr'];
+         $stationid = $_POST['StationID'];
+         $sql = "select AadhaarID from User where Username ='" . $username . "';";
+         $result = $conn->query($sql);
+         if ($result->num_rows > 0) {
+           while( $row = $result->fetch_assoc() ){
+             $userid = $row['AadhaarID'];
+           }
+         }
+         $sql = "select count(*) as total from Fir;";
+         $firid = 1;
+         $result = $conn->query($sql);
+         if ($result->num_rows > 0){
+           while( $row = $result->fetch_assoc() ){
+             $firid = $firid + $row['total'];
+           }
+         }
+         echo $firid;
+         $sql = "insert into Fir (FirID, Lodger, Descr, StationID, LodgeDate) values (" . $firid . ",'" . $username . "','" . $descr . "'," . $stationid . ",'" . date('Y-m-d') . "');";
+         if (!mysqli_query($conn,$sql)){
+           echo("Error description: " . mysqli_error($conn));
+         }
+       }
+     }
+   ?>
+
+</body>
+</html>

@@ -129,6 +129,7 @@
     if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
     }
+    // $_SESSION['conn'] = $conn;
     echo "Database connected!";
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $username = $_REQUEST['uname'];
