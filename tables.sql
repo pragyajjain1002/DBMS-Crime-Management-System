@@ -97,14 +97,15 @@ CREATE TABLE Cases (
     Status      ENUM('Ongoing','Closed') DEFAULT 'Ongoing',
 --     FirID       INT             NOT NULL,
     CourtID     VARCHAR(3)      NOT NULL,
-    FOREIGN KEY (FirID) REFERENCES Fir(FirID),
+--     FOREIGN KEY (FirID) REFERENCES Fir(FirID),
     FOREIGN KEY (CourtID) REFERENCES Court(CourtID)
 );
 
 CREATE TABLE CaseFir (
     CaseID      INT,
     FirID        INT,
-  PRIMARY KEY (CaseID, FirID)
+  PRIMARY KEY (CaseID, FirID),
+  FOREIGN KEY (FirID) REFERENCES Fir(FirID)
   );
 
 CREATE TABLE Suspect (
