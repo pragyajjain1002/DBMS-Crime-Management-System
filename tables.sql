@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS Citizen,
  );
 
  CREATE TABLE Station (
-   StationID   INT              DEFAULT 0,
+   StationID   INT              ,
    Name        VARCHAR(255)     NOT NULL,
    Phone       VARCHAR(255)     NOT NULL,
    Email       VARCHAR(255)     NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE User (
     Username    VARCHAR(255)    PRIMARY KEY,
     Password    VARCHAR(255)    NOT NULL,
     AadhaarID   INT             NOT NULL,
-    PerID       INT             NOT NULL,
+    PerID       INT             DEFAULT 0,
     -- Name        VARCHAR(255)    NOT NULL,
     Email       VARCHAR(255)    NOT NULL,
     FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
@@ -74,8 +74,8 @@ CREATE TABLE Officer (
 
 CREATE TABLE Fir (
     FirID       INT             PRIMARY KEY,
-    Status      ENUM('Withdrawn','Pending','In Court','Completed') DEFAULT 'Pending',
-    LodgeDate   DATE  NOT NULL,
+    Status      ENUM('Withdrawn','Under Investigation', 'In Court', 'Completed','Registered', 'Closed') DEFAULT 'Registered',
+    LodgeDate   DATE  DEFAULT strftime('%Y-%m-%d','now'),
     Descr       VARCHAR(255)    NOT NULL,
     Lodger      VARCHAR(255)    NOT NULL,
     Manager     INT,
@@ -94,7 +94,7 @@ CREATE TABLE Court (
 CREATE TABLE Cases (
     CaseID      INT             PRIMARY KEY,
     Type        ENUM('Criminal','Civil'),
-    Status      ENUM('Pending','Not Guilty','Found Guilty'),
+    Status      ENUM('Ongoing','Closed') DEFAULT 'Ongoing',
     FirID       INT             NOT NULL,
     CourtID     VARCHAR(3)      NOT NULL,
     FOREIGN KEY (FirID) REFERENCES Fir(FirID),
