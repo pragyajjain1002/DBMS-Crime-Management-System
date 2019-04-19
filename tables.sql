@@ -78,10 +78,10 @@ CREATE TABLE Fir (
     LodgeDate   DATETIME  DEFAULT CURRENT_TIMESTAMP,
     Descr       VARCHAR(255)    NOT NULL,
     Lodger      VARCHAR(255)    NOT NULL,
-    Manager     INT,
+--     Manager     INT,
     StationID   INT,
     FOREIGN KEY (Lodger) REFERENCES User(Username),
-    FOREIGN KEY (Manager) REFERENCES Officer(OfficerID),
+--     FOREIGN KEY (Manager) REFERENCES Officer(OfficerID),
     FOREIGN KEY (StationID) REFERENCES Station(StationID)
 );
 
