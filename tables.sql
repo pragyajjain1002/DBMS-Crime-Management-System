@@ -41,7 +41,6 @@ CREATE TABLE User (
     Password    VARCHAR(255)    NOT NULL,
     AadhaarID   INT             NOT NULL,
     PerID       INT             DEFAULT 0,
-    -- Name        VARCHAR(255)    NOT NULL,
     Email       VARCHAR(255)    NOT NULL,
     FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
     FOREIGN KEY (PerID) REFERENCES Permission(PerID)
@@ -74,7 +73,7 @@ CREATE TABLE Officer (
 
 CREATE TABLE Fir (
     FirID       INT             PRIMARY KEY,
-    Status      ENUM('Withdrawn','Under Investigation', 'In Court', 'Completed','Registered', 'Closed') DEFAULT 'Registered',
+    Status      ENUM('Withdrawn','Under Investigation','In Court','Registered','Closed') DEFAULT 'Registered',
     LodgeDate   DATETIME  DEFAULT CURRENT_TIMESTAMP,
     Descr       VARCHAR(255)    NOT NULL,
     Lodger      VARCHAR(255)    NOT NULL,
@@ -86,7 +85,7 @@ CREATE TABLE Fir (
 );
 
 CREATE TABLE Court (
-    CourtID     VARCHAR(3)      PRIMARY KEY,
+    CourtID     INT             PRIMARY KEY,
     Name        VARCHAR(255)    NOT NULL,
     Place       VARCHAR(255)    NOT NULL
 );
@@ -94,24 +93,26 @@ CREATE TABLE Court (
 CREATE TABLE Cases (
     CaseID      INT             PRIMARY KEY,
     Type        ENUM('Criminal','Civil'),
-    Status      ENUM('Ongoing','Closed') DEFAULT 'Ongoing',
---     FirID       INT             NOT NULL,
-    CourtID     VARCHAR(3)      NOT NULL,
---     FOREIGN KEY (FirID) REFERENCES Fir(FirID),
+    -- Status      ENUM('Ongoing','Closed') DEFAULT 'Ongoing',
+    Verdict     ENUM('Guilty','Not Guilty') DEFAULT NULL,
+    FirID       INT             NOT NULL,
+    CourtID     INT             NOT NULL,
+    FOREIGN KEY (FirID) REFERENCES Fir(FirID),
     FOREIGN KEY (CourtID) REFERENCES Court(CourtID)
 );
 
-CREATE TABLE CaseFir (
-    CaseID      INT,
-    FirID        INT,
-  PRIMARY KEY (CaseID, FirID),
-  FOREIGN KEY (FirID) REFERENCES Fir(FirID)
-  );
+-- CREATE TABLE CaseFir (
+--     CaseID      INT,
+--     FirID       INT,
+--     PRIMARY KEY (CaseID, FirID),
+--     FOREIGN KEY (FirID) REFERENCES Fir(FirID)
+-- );
 
 CREATE TABLE Suspect (
     SuspectID   INT             PRIMARY KEY,
     AadhaarID   INT             NOT NULL,
     CaseID      INT             NOT NULL,
+    Found       ENUM('Guilty','Not Guilty'),
     FOREIGN KEY (AadhaarID) REFERENCES Citizen(AadhaarID),
     FOREIGN KEY (CaseID) REFERENCES Cases(CaseID)
 );
@@ -138,5 +139,25 @@ CREATE TRIGGER DownPerID AFTER DELETE ON Officer
 FOR EACH ROW
 BEGIN
   UPDATE User SET PerID = 0 WHERE User.AadhaarID = OLD.AadhaarID;
+END |
+DELIMITER ;
+
+DELIMITER |
+CREATE TRIGGER NewCase BEFORE INSERT ON Cases
+FOR EACH ROW
+BEGIN
+  UPDATE Fir SET Status = "In Court" WHERE Fir.FirID = NEW.FirID;
+END |
+DELIMITER ;
+
+DELIMITER |
+CREATE TRIGGER Verdict BEFORE UPDATE ON Cases
+FOR EACH ROW
+BEGIN
+  IF NEW.Verdict IS NOT NULL
+  THEN
+    UPDATE Suspect SET Found = NEW.Verdict WHERE Suspect.CaseID = NEW.CaseID;
+    UPDATE Fir SET Status = "Closed" WHERE Fir.FirID = NEW.FirID;
+  END IF;
 END |
 DELIMITER ;
