@@ -79,6 +79,21 @@
 <!--  Query Page for normal users. -->
 <body>
 
+  <?php
+    $sql = "select StationID from Station;";
+    $servername = "localhost";
+    $username = "root";
+    $password = "asd";
+    $db = "FIRM";
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $db);
+    // Check connection
+    if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+    }
+   ?>
+
   <h2 style="margin-left: 40%; margin-top: 3%;">
     FIR Portal
   </h2>
@@ -95,25 +110,10 @@
     </td> </tr>
 
     <tr> <td>
-      <button id="history" onclick="document.getElementById('id03').style.display='block'">View FIR filing history</button>
+      <button id="history" onclick="document.getElementById('id03').style.display='block'">View your FIR filing history</button>
     </td> </tr>
 
   </table>
-  <!--  Add the feature of withdrawing a FIR -->
-  <?php
-    $sql = "select StationID from Station;";
-    $servername = "localhost";
-    $username = "root";
-    $password = "asd";
-    $db = "FIRM";
-
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $db);
-    // Check connection
-    if ($conn->connect_error) {
-      die("Connection failed: " . $conn->connect_error);
-    }
-   ?>
 
    <div id="fileFIR">
      <form id="id02" action="./query.php" method="post">
@@ -147,7 +147,7 @@
           ?>
        </select> <br/>
 
-       <button type="submit">File FIR</button>
+       <button type="submit" name='fileFir' value='fileFir'>File FIR</button>
      </form>
    </div>
 
@@ -175,16 +175,11 @@
            $action = "NA";
            $withdraw = 0;
            if ($row['Status'] == 'Registered' or $row['Status'] == 'Under Investigation'){
-             $action = "<form action='./query.php' method='post'> <button type='submit'> Withdraw </button> </form> ";
-             $firid = $row['FirID'];
-             $withdraw = 1;
+             $action = "<form action='./query.php' method='post'> <input type='hidden' name='firid' value=". $row['FirID']. "><button type='submit' name='withdraw' value='withdraw'> Withdraw </button> </form> ";
            }
            echo "<td>" . $action . "</td>";
            echo "</tr>";
          }
-        }
-        else{
-          echo "You have not filed any FIR yet!";
         }
          ?>
      </table>
@@ -192,9 +187,12 @@
 
    <?php
      if ($_SERVER["REQUEST_METHOD"] == "POST") {
-       if($withdraw==1){
+       if( !empty($_POST['withdraw']) ){
         //  Withdraw the FIR,
-        $sql = 'update Fir set Status = "Withdrawn"';
+        echo "This is a withdraw request";
+        $firid = $_POST['firid'];
+        echo " ---> " . $firid;
+        $sql = 'update Fir set Status = "Withdrawn" where FirID = ' . $firid . ";";
         if (!mysqli_query($conn,$sql)){
           echo("Error description: " . mysqli_error($conn));
         }
@@ -203,7 +201,7 @@
         }
        }
        else{
-         echo "Inside else";
+         echo "FIRfile Inside else";
          $username = $_SESSION['username'];
          $descr = $_REQUEST['ocr'] . ":" . $_REQUEST['descr'];
          $stationid = $_POST['StationID'];
