@@ -1,1 +1,1 @@
-# CS315 (Principles of Database Systems) course project, IITK
+CS315 (Principles of Database Systems) course project, IITK
